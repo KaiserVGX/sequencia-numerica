@@ -37,3 +37,46 @@ print("==============================")
 
 if __name__ == "__main__":
     iniciar_jogo()
+
+def mover_peca(tabuleiro, movimento):
+    posicao_vazia = tabuleiro.index(0)
+    nova_posicao = posicao_vazia
+
+    if movimento == "w":
+        if posicao_vazia >= 3:
+            nova_posicao -= 3
+        else:
+            print("Movimento inválido! Não há espaço acima.")
+            return False
+
+    elif movimento == "s":
+        if posicao_vazia < 9:
+            nova_posicao += 3
+        else:
+            print("Movimento inválido! Não há espaço abaixo.")
+            return False
+
+    elif movimento == "a":
+        if posicao_vazia % 3 != 0:
+            nova_posicao -= 1
+        else:
+            print("Movimento inválido! Não há espaço à esquerda.")
+            return False
+
+    elif movimento == "d":
+        if posicao_vazia % 3 != 2:
+            nova_posicao += 1
+        else:
+            print("Movimento inválido! Não há espaço à direita.")
+            return False
+
+    else:
+        print("Tecla inválida! Use W, A, S ou D.")
+        return False
+
+    tabuleiro[posicao_vazia], tabuleiro[nova_posicao] = (
+        tabuleiro[nova_posicao],
+        tabuleiro[posicao_vazia],
+    )
+
+    return True
