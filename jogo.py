@@ -1,42 +1,31 @@
 def iniciar_jogo():
-    print("==============================")
-    print("     JOGO DE SEQUÊNCIA")
-    print("==============================")
-    print("Organize os números em ordem!")
-    print("Em breve, você poderá jogar.")
-    print("==============================")
+    print("\n" + "=" * 35)
+    print("       JOGO DE SEQUÊNCIA")
+    print("=" * 35)
+    print("Organize os números em ordem crescente!")
+    print("Use W, A, S e D para movimentar as peças.")
+    print("Digite H para ver a ajuda.")
+    print("Digite Q para sair.")
+    print("=" * 35)
 
 
-def criar_tabuleiro():
-    # Cria uma matriz 4x4 (4 linhas e 3 colunas) com os números de 1 a 11 e um espaço vazio (" ")
-    tabuleiro = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9],
-        [10, 11, " "]
-    ]
-    return tabuleiro
+def mostrar_tabuleiro(tabuleiro):
+    print("\n       TABULEIRO")
+    print("---------------------")
 
-def exibir_tabuleiro(tabuleiro):
-    print("\n  +-----+-----+-----+")
-    for linha in tabuleiro:
-        # Formata cada elemento para alinhar perfeitamente no terminal
-        elementos_formatados = []
-        for elemento in linha:
-            elementos_formatados.append(f"{str(elemento):>2}")
-        
-        print("  | " + " | ".join(elementos_formatados) + " |")
-        print("  +-----+-----+-----+")
-    print()
+    for i in range(0, len(tabuleiro), 3):
+        linha = tabuleiro[i:i + 3]
 
-tabuleiro = criar_tabuleiro()
-exibir_tabuleiro(tabuleiro)
+        print("|", end=" ")
 
-print("Em breve, você poderá jogar.")
-print("==============================")
+        for numero in linha:
+            if numero == 0:
+                print("  ", end=" | ")
+            else:
+                print(f"{numero:2}", end=" | ")
 
-if __name__ == "__main__":
-    iniciar_jogo()
+        print("\n---------------------")
+
 
 def mover_peca(tabuleiro, movimento):
     posicao_vazia = tabuleiro.index(0)
@@ -46,37 +35,101 @@ def mover_peca(tabuleiro, movimento):
         if posicao_vazia >= 3:
             nova_posicao -= 3
         else:
-            print("Movimento inválido! Não há espaço acima.")
+            print("Não é possível mover para cima!")
             return False
 
     elif movimento == "s":
         if posicao_vazia < 9:
             nova_posicao += 3
         else:
-            print("Movimento inválido! Não há espaço abaixo.")
+            print("Não é possível mover para baixo!")
             return False
 
     elif movimento == "a":
         if posicao_vazia % 3 != 0:
             nova_posicao -= 1
         else:
-            print("Movimento inválido! Não há espaço à esquerda.")
+            print("Não é possível mover para a esquerda!")
             return False
 
     elif movimento == "d":
         if posicao_vazia % 3 != 2:
             nova_posicao += 1
         else:
-            print("Movimento inválido! Não há espaço à direita.")
+            print("Não é possível mover para a direita!")
             return False
 
     else:
-        print("Tecla inválida! Use W, A, S ou D.")
+        print("Movimento inválido!")
         return False
 
     tabuleiro[posicao_vazia], tabuleiro[nova_posicao] = (
         tabuleiro[nova_posicao],
-        tabuleiro[posicao_vazia],
+        tabuleiro[posicao_vazia]
     )
 
     return True
+
+
+def verificar_vitoria(tabuleiro):
+    sequencia_correta = list(range(1, 12)) + [0]
+    return tabuleiro == sequencia_correta
+
+
+def criar_tabuleiro():
+    tabuleiro = [1, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11, 9]
+
+    return tabuleiro
+
+
+def mostrar_ajuda():
+    print("\n" + "=" * 30)
+    print("             AJUDA")
+    print("=" * 30)
+    print("W - Mover para cima")
+    print("S - Mover para baixo")
+    print("A - Mover para a esquerda")
+    print("D - Mover para a direita")
+    print("H - Mostrar esta ajuda")
+    print("Q - Encerrar o jogo")
+    print("=" * 30)
+
+
+def jogar():
+    tabuleiro = criar_tabuleiro()
+    quantidade_movimentos = 0
+
+    iniciar_jogo()
+
+    while True:
+        mostrar_tabuleiro(tabuleiro)
+
+        print(f"Movimentos realizados: {quantidade_movimentos}")
+
+        if verificar_vitoria(tabuleiro):
+            print("\n" + "=" * 35)
+            print("       PARABÉNS! VOCÊ VENCEU!")
+            print(f"       Total de movimentos: {quantidade_movimentos}")
+            print("=" * 35)
+            break
+
+        movimento = input("\nEscolha um movimento: ").lower().strip()
+
+        if movimento == "q":
+            print("\nJogo encerrado. Até a próxima!")
+            break
+
+        elif movimento == "h":
+            mostrar_ajuda()
+
+        elif movimento in ["w", "a", "s", "d"]:
+            if mover_peca(tabuleiro, movimento):
+                quantidade_movimentos += 1
+                print("Movimento realizado com sucesso!")
+
+        else:
+            print("Comando desconhecido! Digite H para ver a ajuda.")
+
+
+if __nome__ == "__main__":
+    jogar()
