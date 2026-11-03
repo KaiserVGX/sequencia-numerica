@@ -3,9 +3,12 @@ def iniciar_jogo():
     print("       JOGO DE SEQUÊNCIA")
     print("=" * 35)
     print("Organize os números em ordem crescente!")
-    print("Use W, A, S e D para movimentar as peças.")
-    print("Digite H para ver a ajuda.")
-    print("Digite Q para sair.")
+    print("W - Mover para cima")
+    print("S - Mover para baixo")
+    print("A - Mover para a esquerda")
+    print("D - Mover para a direita")
+    print("H - Mostrar ajuda")
+    print("Q - Sair do jogo")
     print("=" * 35)
 
 
@@ -35,28 +38,28 @@ def mover_peca(tabuleiro, movimento):
         if posicao_vazia >= 3:
             nova_posicao -= 3
         else:
-            print("Não é possível mover para cima!")
+            print("Movimento inválido! Não há espaço acima.")
             return False
 
     elif movimento == "s":
         if posicao_vazia < 9:
             nova_posicao += 3
         else:
-            print("Não é possível mover para baixo!")
+            print("Movimento inválido! Não há espaço abaixo.")
             return False
 
     elif movimento == "a":
         if posicao_vazia % 3 != 0:
             nova_posicao -= 1
         else:
-            print("Não é possível mover para a esquerda!")
+            print("Movimento inválido! Não há espaço à esquerda.")
             return False
 
     elif movimento == "d":
         if posicao_vazia % 3 != 2:
             nova_posicao += 1
         else:
-            print("Não é possível mover para a direita!")
+            print("Movimento inválido! Não há espaço à direita.")
             return False
 
     else:
@@ -77,9 +80,12 @@ def verificar_vitoria(tabuleiro):
 
 
 def criar_tabuleiro():
-    tabuleiro = [1, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11, 9]
-
-    return tabuleiro
+    return [
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 0,
+        10, 11, 9
+    ]
 
 
 def mostrar_ajuda():
@@ -93,6 +99,61 @@ def mostrar_ajuda():
     print("H - Mostrar esta ajuda")
     print("Q - Encerrar o jogo")
     print("=" * 30)
+
+
+def testar_movimentacao():
+    tabuleiro = [
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 0,
+        10, 11, 9
+    ]
+
+    assert mover_peca(tabuleiro, "a") is True
+    assert tabuleiro == [
+        1, 2, 3,
+        4, 5, 6,
+        7, 0, 8,
+        10, 11, 9
+    ]
+
+    print("Teste de movimentação: OK")
+
+
+def testar_movimento_invalido():
+    tabuleiro = [
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 0,
+        10, 11, 9
+    ]
+
+    tabuleiro_original = tabuleiro.copy()
+
+    resultado = mover_peca(tabuleiro, "d")
+
+    assert resultado is False
+    assert tabuleiro == tabuleiro_original
+
+    print("Teste de movimento inválido: OK")
+
+
+def testar_vitoria():
+    tabuleiro_correto = list(range(1, 12)) + [0]
+
+    assert verificar_vitoria(tabuleiro_correto) is True
+
+    print("Teste de vitória: OK")
+
+
+def executar_testes():
+    print("\nExecutando testes do jogo...\n")
+
+    testar_movimentacao()
+    testar_movimento_invalido()
+    testar_vitoria()
+
+    print("\nTodos os testes foram concluídos com sucesso!")
 
 
 def jogar():
@@ -131,5 +192,7 @@ def jogar():
             print("Comando desconhecido! Digite H para ver a ajuda.")
 
 
-if __nome__ == "__main__":
+if __name__ == "__main__":
+    executar_testes()
+
     jogar()
