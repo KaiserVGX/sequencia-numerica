@@ -3,21 +3,47 @@ def iniciar_jogo():
     print("       JOGO DE SEQUÊNCIA")
     print("=" * 35)
     print("Organize os números em ordem crescente!")
-    print("W - Mover para cima")
-    print("S - Mover para baixo")
-    print("A - Mover para a esquerda")
-    print("D - Mover para a direita")
-    print("H - Mostrar ajuda")
-    print("Q - Sair do jogo")
+    print("Use W, A, S e D para movimentar.")
+    print("Digite H para ver a ajuda.")
+    print("Digite Q para sair da partida.")
     print("=" * 35)
 
 
-def mostrar_tabuleiro(tabuleiro):
+def criar_tabuleiro(dificuldade):
+    if dificuldade == "1":
+        linhas = 3
+        colunas = 3
+        tabuleiro = [
+            1, 2, 3,
+            4, 0, 6,
+            7, 5, 8
+        ]
+
+    elif dificuldade == "2":
+        linhas = 2
+        colunas = 3
+        tabuleiro = [
+            1, 2, 3,
+            0, 4, 5
+        ]
+
+    else:
+        linhas = 2
+        colunas = 2
+        tabuleiro = [
+            0, 1,
+            3, 2
+        ]
+
+    return tabuleiro, linhas, colunas
+
+
+def mostrar_tabuleiro(tabuleiro, colunas):
     print("\n       TABULEIRO")
     print("---------------------")
 
-    for i in range(0, len(tabuleiro), 3):
-        linha = tabuleiro[i:i + 3]
+    for i in range(0, len(tabuleiro), colunas):
+        linha = tabuleiro[i:i + colunas]
 
         print("|", end=" ")
 
@@ -30,40 +56,40 @@ def mostrar_tabuleiro(tabuleiro):
         print("\n---------------------")
 
 
-def mover_peca(tabuleiro, movimento):
+def mover_peca(tabuleiro, movimento, linhas, colunas):
     posicao_vazia = tabuleiro.index(0)
     nova_posicao = posicao_vazia
 
     if movimento == "w":
-        if posicao_vazia >= 3:
-            nova_posicao -= 3
+        if posicao_vazia >= colunas:
+            nova_posicao -= colunas
         else:
             print("Movimento inválido! Não há espaço acima.")
             return False
 
     elif movimento == "s":
-        if posicao_vazia < 9:
-            nova_posicao += 3
+        if posicao_vazia < (linhas - 1) * colunas:
+            nova_posicao += colunas
         else:
             print("Movimento inválido! Não há espaço abaixo.")
             return False
 
     elif movimento == "a":
-        if posicao_vazia % 3 != 0:
+        if posicao_vazia % colunas != 0:
             nova_posicao -= 1
         else:
             print("Movimento inválido! Não há espaço à esquerda.")
             return False
 
     elif movimento == "d":
-        if posicao_vazia % 3 != 2:
+        if posicao_vazia % colunas != colunas - 1:
             nova_posicao += 1
         else:
             print("Movimento inválido! Não há espaço à direita.")
             return False
 
     else:
-        print("Movimento inválido!")
+        print("Comando inválido!")
         return False
 
     tabuleiro[posicao_vazia], tabuleiro[nova_posicao] = (
@@ -75,17 +101,8 @@ def mover_peca(tabuleiro, movimento):
 
 
 def verificar_vitoria(tabuleiro):
-    sequencia_correta = list(range(1, 12)) + [0]
+    sequencia_correta = list(range(1, len(tabuleiro))) + [0]
     return tabuleiro == sequencia_correta
-
-
-def criar_tabuleiro():
-    return [
-        1, 2, 3,
-        4, 5, 6,
-        7, 8, 0,
-        10, 11, 9
-    ]
 
 
 def mostrar_ajuda():
@@ -96,95 +113,89 @@ def mostrar_ajuda():
     print("S - Mover para baixo")
     print("A - Mover para a esquerda")
     print("D - Mover para a direita")
-    print("H - Mostrar esta ajuda")
-    print("Q - Encerrar o jogo")
+    print("H - Mostrar ajuda")
+    print("Q - Sair da partida")
     print("=" * 30)
 
 
-def testar_movimentacao():
-    tabuleiro = [
-        1, 2, 3,
-        4, 5, 6,
-        7, 8, 0,
-        10, 11, 9
-    ]
+def escolher_dificuldade():
+    print("\n========== DIFICULDADE ==========")
+    print("1 - Fácil (8 números)")
+    print("2 - Normal (5 números)")
+    print("3 - Difícil (3 números)")
+    print("=================================")
 
-    assert mover_peca(tabuleiro, "a") is True
-    assert tabuleiro == [
-        1, 2, 3,
-        4, 5, 6,
-        7, 0, 8,
-        10, 11, 9
-    ]
+    while True:
+        escolha = input("Escolha a dificuldade: ").strip()
 
-    print("Teste de movimentação: OK")
+        if escolha in ["1", "2", "3"]:
+            return escolha
+
+        print("Opção inválida! Escolha 1, 2 ou 3.")
 
 
-def testar_movimento_invalido():
-    tabuleiro = [
-        1, 2, 3,
-        4, 5, 6,
-        7, 8, 0,
-        10, 11, 9
-    ]
-
-    tabuleiro_original = tabuleiro.copy()
-
-    resultado = mover_peca(tabuleiro, "d")
-
-    assert resultado is False
-    assert tabuleiro == tabuleiro_original
-
-    print("Teste de movimento inválido: OK")
+def calcular_medalha(pontos):
+    if pontos >= 500:
+        return "Ouro"
+    elif pontos >= 300:
+        return "Prata"
+    elif pontos >= 100:
+        return "Bronze"
+    else:
+        return "Sem medalha"
 
 
-def testar_vitoria():
-    tabuleiro_correto = list(range(1, 12)) + [0]
+def mostrar_pontuacao(pontos):
+    medalha = calcular_medalha(pontos)
 
-    assert verificar_vitoria(tabuleiro_correto) is True
-
-    print("Teste de vitória: OK")
-
-
-def executar_testes():
-    print("\nExecutando testes do jogo...\n")
-
-    testar_movimentacao()
-    testar_movimento_invalido()
-    testar_vitoria()
-
-    print("\nTodos os testes foram concluídos com sucesso!")
+    print("\n========== PONTUAÇÃO ==========")
+    print(f"Pontos acumulados: {pontos}")
+    print(f"Medalha atual: {medalha}")
+    print("===============================")
 
 
-def jogar():
-    tabuleiro = criar_tabuleiro()
+def jogar_partida(dificuldade, pontos):
+    tabuleiro, linhas, colunas = criar_tabuleiro(dificuldade)
+
+    if dificuldade == "1":
+        nome_dificuldade = "Fácil"
+    elif dificuldade == "2":
+        nome_dificuldade = "Normal"
+    else:
+        nome_dificuldade = "Difícil"
+
     quantidade_movimentos = 0
 
     iniciar_jogo()
 
+    print(f"\nDificuldade escolhida: {nome_dificuldade}")
+
     while True:
-        mostrar_tabuleiro(tabuleiro)
+        mostrar_tabuleiro(tabuleiro, colunas)
 
         print(f"Movimentos realizados: {quantidade_movimentos}")
+        print(f"Pontuação atual: {pontos}")
 
         if verificar_vitoria(tabuleiro):
             print("\n" + "=" * 35)
             print("       PARABÉNS! VOCÊ VENCEU!")
-            print(f"       Total de movimentos: {quantidade_movimentos}")
+            print(f"       Movimentos: {quantidade_movimentos}")
+            print("       Você ganhou 25 pontos!")
             print("=" * 35)
-            break
+
+            return True
 
         movimento = input("\nEscolha um movimento: ").lower().strip()
 
         if movimento == "q":
-            print("\nJogo encerrado. Até a próxima!")
-            break
+            print("\nPartida encerrada.")
+            return False
 
         elif movimento == "h":
             mostrar_ajuda()
 
         elif movimento in ["w", "a", "s", "d"]:
-            if mover_peca(tabuleiro, movimento):
+            if mover_peca(tabuleiro, movimento, linhas, colunas):
                 quantidade_movimentos += 1
                 print("Movimento realizado com sucesso!")
 
@@ -192,7 +203,36 @@ def jogar():
             print("Comando desconhecido! Digite H para ver a ajuda.")
 
 
-if __name__ == "__main__":
-    executar_testes()
+def jogar():
+    pontos = 0
 
+    print("\nBem-vindo ao Jogo de Sequência!")
+
+    while True:
+        mostrar_pontuacao(pontos)
+
+        dificuldade = escolher_dificuldade()
+
+        venceu = jogar_partida(dificuldade, pontos)
+
+        if venceu:
+            pontos += 25
+            print("\nSua pontuação foi atualizada!")
+
+        mostrar_pontuacao(pontos)
+
+        resposta = input(
+            "\nDeseja jogar outra partida? (s/n): "
+        ).lower().strip()
+
+        if resposta != "s":
+            print("\nObrigado por jogar!")
+
+            mostrar_pontuacao(pontos)
+
+            print("Até a próxima!")
+            break
+
+
+if __name__ == "__main__":
     jogar()
